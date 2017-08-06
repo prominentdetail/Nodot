@@ -1,3 +1,9 @@
+/*
+Alex Hanson-White
+http://www.alexhw.com
+support me via patreon!
+*/
+
 var gui = null;//require('nw.gui');	//used in loading bins and auth to allow loading of website in browser.
 var myWindow = null;//gui.Window.get();
 
