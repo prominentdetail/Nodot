@@ -33,12 +33,12 @@ function masterData(){
 	this.init = function(){
 		//wacom = document.getElementById('wtPlugin');
 		
-		iframe = document.getElementById('tilesetIframe');
+		iframe = document.getElementById('canvasIframe');
 		//midTable = document.getElementById('midTable');
-		//jframe = $('#tilesetIframe');
+		//jframe = $('#canvasIframe');
 		innerDoc = (iframe.contentDocument) ? iframe.contentDocument : iframe.contentWindow.document;		
 		canvasDiv = innerDoc.getElementById('canvasDiv');
-		canvasOverlay = innerDoc.getElementById('tilesetIframeCanvasOverlay');
+		canvasOverlay = innerDoc.getElementById('canvasOverlay');
 		contextOverlay = canvasOverlay.getContext('2d');
 	}
 	

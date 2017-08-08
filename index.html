@@ -23,9 +23,9 @@
 			We can also take advantage of the scrollbars and get position of the iframe page and may be useful with mouse coordinates.
 			The canvasDiv element has a padding that will allow scrolling beyond the canvas edges, and we should allow this to be adjustable, or relative to canvas size.
 		-->		
-		<div id="panel" class="ui-widget-content" style="width: 150px; height: 150px; text-align: center; vertical-align: bottom; display: table-cell;">
+		<div id="panel" class="" style="width: calc(100% - 200px); height: calc(100% - 100px); position:absolute; right:0px;">
 		
-			<iframe id="tilesetIframe" onload="iframeLoaded()" srcdoc="
+			<iframe id="canvasIframe" onload="iframeLoaded()" srcdoc="
 				<html>
 					<link href='iFrameStyle.css' rel='stylesheet'>
 					
@@ -36,23 +36,18 @@
 					</style>
 					
 					<body style='padding:0px; margin:0px; zoom:1;'>
-						<div id='webglDiv' >
-						</div>
 						
-						<div id='canvasDiv' style='padding:512px; display: inline-block;'>
+						<div id='canvasFrame' style='padding:calc(100% * 0.25); display: inline-block;'>
 							<div id='canvasDiv' class='bgChecker' style='width:512px; height:512px;'>
 							</div>
 						</div>
 						
-						<canvas id='tilesetIframeCanvasOverlay' width='512' height='512' style='position:fixed; top:0px; left:0px; z-index:999; pointer-events:none;'></canvas>
+						<canvas id='canvasOverlay' width='512' height='512' style='position:fixed; top:0px; left:0px; z-index:999; pointer-events:none;'></canvas>
 						
-						<div id='structureDiv' style='visibility:hidden; overflow:hidden; width:0px; height:0px;'>
-							Test
-						</div>
 					</body>
 					
 				</html>" 
-			style=" width:calc(100% - 12px); height: calc(100% - 32px);">
+			style=" width:100%; height:100%; border: inset 3px #ccc;">
 			</iframe>
 		
 		</div>
