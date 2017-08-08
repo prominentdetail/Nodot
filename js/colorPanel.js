@@ -15,8 +15,8 @@ function colorData(){
 		catch(e){
 			this.picked[0] = {color:'rgba(0,255,0,1)', e:null, r:0,g:0,b:0, h:0,s:0,l:0};
 			this.picked[1] = {color:'rgba(255,255,255,1)', e:null, r:255,g:255,b:255, h:0,s:100,l:100};
-			console.log("local storage not supported?"+e.message);    
-		 }
+			//for some reason I had to do a try/catch because github was giving an error when trying to access a localStorage variable that hadn't been assigned a value yet.
+		}
 		
 		master.e.colorPanel.innerHTML = '\
 			<table width="100%"><tr><td>\
