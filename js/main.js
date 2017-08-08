@@ -186,7 +186,7 @@ function update(){
 			case("blue"):	//red and green have no break; so they'll continue into blue.
 				var rect = e.firstChild.getBoundingClientRect();	//get the position of the slider
 				
-				var c = color.swatch[color.currentColor];
+				var c = color.picked[color.currentColor];
 				if(color.mode=="rgb")c[e.dataset.rgb] = parseInt((clamp(mouse.x-rect.left,0,100)/100)*255);
 				else{
 					if(e.dataset.hsl=="h")c.h = parseInt((clamp(mouse.x-rect.left,0,100)/100)*360);
@@ -197,7 +197,7 @@ function update(){
 			case("redValue"):
 			case("greenValue"):
 			case("blueValue"):
-				var c = color.swatch[color.currentColor];
+				var c = color.picked[color.currentColor];
 				if(e==master.clickedElement){
 					if(color.mode=="rgb")c[e.dataset.rgb] = clamp(parseInt(e.dataset.clickvalue)+mouse.clickY-mouse.y,0,255);
 					else{
@@ -243,7 +243,7 @@ function toggleIcon(e) {
 	var i=0;
 	for(i=0; i<count; i++){
 		var item = e.classList.item(i);
-		var c = color.swatch[color.currentColor];
+		var c = color.picked[color.currentColor];
 		switch(item){
 			case("ui-rgb-icon"):
 				color.mode = "hsl";
