@@ -4,15 +4,6 @@ http://www.alexhw.com
 support me via patreon!
 */
 
-var gui = null;//require('nw.gui');	//used in loading bins and auth to allow loading of website in browser.
-var myWindow = null;//gui.Window.get();
-
-var wacom;
-
-var midTable;
-var iframe;
-var jframe;
-var innerDoc;
 var canvasDiv;			//the canvases/layers reside in this div.
 var canvasOverlay;		//used for drawing the brush indicator and selection marquee stuff.
 var contextOverlay;
@@ -31,14 +22,9 @@ function masterData(){
 	this.keyedElement = null;
 
 	this.init = function(){
-		//wacom = document.getElementById('wtPlugin');
-		
-		iframe = document.getElementById('canvasIframe');
-		//midTable = document.getElementById('midTable');
-		//jframe = $('#canvasIframe');
-		innerDoc = (iframe.contentDocument) ? iframe.contentDocument : iframe.contentWindow.document;		
-		canvasDiv = innerDoc.getElementById('canvasDiv');
-		canvasOverlay = innerDoc.getElementById('canvasOverlay');
+		master.e['colorPanel'] = document.getElementById('colorPanel');
+		canvasDiv = document.getElementById('canvasDiv');
+		canvasOverlay = document.getElementById('canvasOverlay');
 		contextOverlay = canvasOverlay.getContext('2d');
 	}
 	
@@ -66,21 +52,10 @@ end of mouse
 ###############################################################
 */
 
-function iframeLoaded(){
-	try{
-		gui = require('nw.gui');
-		myWindow = gui.Window.get();
-    } catch (e){
-    }
-	window.onload = loadElements();
-}
-
-function loadElements(){
+function initiate(){
 
 	/* setup the main stuff */
 		
-	master.e['colorPanel'] = document.getElementById('colorPanel');
-	
 	master.init();
 	scene.init();
 	tool.init();
@@ -122,6 +97,7 @@ function loadElements(){
 	}
 	document.body.onmouseenter = function(e){
 		e = e || window.event;
+		//console.log(e.which);
 		
 		if(e.which!==1){
 			master.clickedElement = null;
@@ -220,21 +196,6 @@ function update(){
 	
 }
 
-function checkJSON(j){
-	if (j){
-		try{
-			a=JSON.parse( localStorage.getItem(j) );
-			return a;
-		}catch(e){
-			return null;
-		}
-	}else return null
-}
-
-function clamp(num,min,max){
-  return Math.min(Math.max(min,num),max);
-}
-
 function toggleIcon(e) {
 	//e.classList.contains("ui-rgb-icon")		
     //e.style.backgroundColor = "#ffff00";
@@ -275,20 +236,4 @@ function toggleIcon(e) {
 	}
 }
 
-function refreshColorSliders(e){
-	e = e || window.event;
-	//console.log(e.button);
-	console.log(e.which);
-	
-	switch(e.type){
-		case("mousedown"):
-			break;
-		case("mousemove"):
-			break;
-		case("mouseup"):
-			break;
-		default:
-		
-	}
-}
 

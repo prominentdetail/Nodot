@@ -8,6 +8,7 @@
 	<link href="style.css" rel="stylesheet">	
 	
 	<script type="text/javascript" src="js/main.js"></script>
+	<script type="text/javascript" src="js/misc.js"></script>
 	<script type="text/javascript" src="js/scene.js"></script>
 	<script type="text/javascript" src="js/tool.js"></script>
 	<script type="text/javascript" src="js/colorPanel.js"></script>
@@ -17,40 +18,20 @@
 		<div id="bodyBlock"></div><!-- This div is required in order to check if left mouse button is held while leaving/entering the window, it blocks the click to the body which would otherwise mess it up -->
 		
 		<!-- Panel ####################################################
-			This panel is used to house the canvases. There is an iframe with divs that contain the canvases. Also a canvas that gets overlayed to draw the brush indicator
-			After the iframe loads, it runs the iframeLoaded() function to initiate the rest of the components. It's important that iframe has been loaded before running other stuff.
-			Because the iframe zooms, we won't have to do any scaling in the canvas element.
-			We can also take advantage of the scrollbars and get position of the iframe page and may be useful with mouse coordinates.
-			The canvasDiv element has a padding that will allow scrolling beyond the canvas edges, and we should allow this to be adjustable, or relative to canvas size.
+			The canvases that we draw to will be placed within these divs. Also a canvas that gets overlayed to draw the brush indicator
+			We can zoom the div contents so that we don't have to do any scaling drawing procedures on the canvas.
+			We can also take advantage of the scrollbars and get position of the mouse coordinates within the div.
+			The canvasFrame element has a padding that will allow scrolling beyond the canvas edges, and we should allow this to be adjustable, or relative to canvas size.
 		-->		
-		<div id="panel" class="" style="width: calc(100% - 200px); height: calc(100% - 100px); position:absolute; right:0px;">
 		
-			<iframe id="canvasIframe" onload="iframeLoaded()" srcdoc="
-				<html>
-					<link href='iFrameStyle.css' rel='stylesheet'>
-					
-					<style>
-					  canvas {
-					   image-rendering: pixelated;
-					  }
-					</style>
-					
-					<body style='padding:0px; margin:0px; zoom:1;'>
-						
-						<div id='canvasFrame' style='padding:calc(100% * 0.25); display: inline-block;'>
-							<div id='canvasDiv' class='bgChecker' style='width:512px; height:512px;'>
-							</div>
-						</div>
-						
-						<canvas id='canvasOverlay' width='512' height='512' style='position:fixed; top:0px; left:0px; z-index:999; pointer-events:none;'></canvas>
-						
-					</body>
-					
-				</html>" 
-			style=" width:100%; height:100%; border: inset 3px #ccc;">
-			</iframe>
-		
+		<div style='overflow:scroll; width: calc(100% - 200px); height: calc(100% - 100px); position:absolute; right:0px; top:0px; border: inset 3px #ccc; background-color: #888;'>
+			<div id='canvasFrame' style='padding:calc(100% * 0.25); display: inline-block; zoom:1;'>
+				<div id='canvasDiv' class='bgChecker' style='width:512px; height:512px; position:relative;'>
+				</div>
+			</div>
+			<canvas id='canvasOverlay' width='512' height='512' style='position:fixed; top:0px; left:0px; z-index:999; pointer-events:none;'></canvas>
 		</div>
+		
 		<!-- 
 			end of panel
 			########################################################
@@ -58,12 +39,18 @@
 		
 		<div id="colorPanel" style="width:200px;"></div>
 		
+		
 		<fieldset>
 			<legend>Test</legend>
 			<div class="controlgroup">
 				<button>test</button>
 			</div>
 		</fieldset>
+		
+		<script type="text/javascript">
+			//put this script last within body so that it runs after dom elements are ready
+			initiate();
+		</script>
 		
 	</body>
 </html>

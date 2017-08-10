@@ -1,4 +1,10 @@
+	
+	canvas {
+		image-rendering: pixelated;
+	}
+	
 	body{
+		image-rendering: pixelated;
 		background-color:#999;
 		overflow: hidden;
 		
@@ -24,6 +30,10 @@
 		z-index:-10;
 	}
 	
+	.bgChecker{
+		background-image: url("images/checker.png");
+	}
+
 	button {
 		background-color: #bbb;
 		color: black;
