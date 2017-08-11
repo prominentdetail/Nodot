@@ -23,6 +23,9 @@ function masterData(){
 
 	this.init = function(){
 		master.e['colorPanel'] = document.getElementById('colorPanel');
+		master.e['canvasScroll'] = document.getElementById('canvasScroll');
+		master.e['canvasFrame'] = document.getElementById('canvasFrame');
+		master.e['canvasClip'] = document.getElementById('canvasClip');
 		canvasDiv = document.getElementById('canvasDiv');
 		canvasOverlay = document.getElementById('canvasOverlay');
 		contextOverlay = canvasOverlay.getContext('2d');
@@ -61,6 +64,19 @@ function initiate(){
 	tool.init();
 	color.init();
 
+	master.e.canvasFrame.onmousemove = function(e){
+		e = e || window.event;
+		
+		mouse.x = e.clientX;     // Get the horizontal coordinate
+		mouse.y = e.clientY;     // Get the vertical coordinate
+
+		var c = master.e.canvasClip;
+		var rect = c.getBoundingClientRect();
+		canvasOverlay.style.left = mouse.x-rect.left-parseInt(c.style.borderWidth,10)-parseInt(canvasOverlay.width*0.5,10)+"px";
+		canvasOverlay.style.top = mouse.y-rect.top-parseInt(c.style.borderWidth,10)-parseInt(canvasOverlay.height*0.5,10)+"px";
+		
+		update();
+	}
 	document.body.onmousemove = function(e){
 		e = e || window.event;
 		
@@ -204,18 +220,25 @@ function toggleIcon(e) {
 	var i=0;
 	for(i=0; i<count; i++){
 		var item = e.classList.item(i);
-		var c = color.picked[color.currentColor];
+		var c = color.picked[0];
 		switch(item){
 			case("ui-rgb-icon"):
 				color.mode = "hsl";
 				e.classList.remove(item);
 				e.classList.add("ui-hsl-icon");
 				e.classList.toggle("highlightIcon");
+				
+				//convert both primary and secondary colors
 				var hsl = rgbToHsl(c.r,c.g,c.b);
 				c.h = hsl[0];
 				c.s = hsl[1];
 				c.l = hsl[2];
-				//console.log(c);
+				c = color.picked[1];
+				hsl = rgbToHsl(c.r,c.g,c.b);
+				c.h = hsl[0];
+				c.s = hsl[1];
+				c.l = hsl[2];
+				
 				color.updatePicker();
 				break;
 			case("ui-hsl-icon"):
@@ -223,11 +246,18 @@ function toggleIcon(e) {
 				e.classList.remove(item);
 				e.classList.add("ui-rgb-icon");
 				e.classList.toggle("highlightIcon");
+				
+				//convert both primary and secondary colors
 				var rgb = hslToRgb(c.h,c.s,c.l);
 				c.r = Math.round(rgb[0]);
 				c.g = Math.round(rgb[1]);
 				c.b = Math.round(rgb[2]);
-				//console.log(c);
+				c = color.picked[1];
+				rgb = hslToRgb(c.h,c.s,c.l);
+				c.r = Math.round(rgb[0]);
+				c.g = Math.round(rgb[1]);
+				c.b = Math.round(rgb[2]);
+				
 				color.updatePicker();
 				break;
 			default:

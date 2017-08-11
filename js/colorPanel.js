@@ -18,8 +18,8 @@ function colorData(){
 			</td><td width="1px">\
 			<div style="position:relative; vertical-align:top;">\
 				<div style="position:relative; width:54px; height:54px; background:none;">\
-					<div id="primary" class="picked" style="z-index:1; position:absolute; top:0px; left;0px; width:40px; height:40px;" onclick="color.currentColor=0; this.style.zIndex=1; this.nextElementSibling.style.zIndex=0; "></div>\
-					<div id="secondary" class="picked" style="z-index:0; position:absolute; bottom:0px; right:0px; width:40px; height:40px;" onclick="color.currentColor=1; this.style.zIndex=1; this.previousElementSibling.style.zIndex=0; "></div>\
+					<div id="primary" class="picked" style="z-index:1; position:absolute; top:0px; left;0px; width:40px; height:40px;" onclick="color.currentColor=0; color.updatePicker(); this.style.zIndex=1; this.nextElementSibling.style.zIndex=0; "></div>\
+					<div id="secondary" class="picked" style="z-index:0; position:absolute; bottom:0px; right:0px; width:40px; height:40px;" onclick="color.currentColor=1; color.updatePicker(); this.style.zIndex=1; this.previousElementSibling.style.zIndex=0; "></div>\
 				</div>\
 			</div>\
 			</td></tr></table>\

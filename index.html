@@ -24,14 +24,16 @@
 			The canvasFrame element has a padding that will allow scrolling beyond the canvas edges, and we should allow this to be adjustable, or relative to canvas size.
 		-->		
 		
-		<div style='overflow:scroll; width: calc(100% - 200px); height: calc(100% - 100px); position:absolute; right:0px; top:0px; border: inset 3px #ccc; background-color: #888;'>
+		<div id='canvasScroll' style='overflow:scroll; width: calc(100% - 200px); height: calc(100% - 100px); position:absolute; right:0px; top:0px; border: inset 3px #ccc; background-color: #888;'>
 			<div id='canvasFrame' style='padding:calc(100% * 0.25); display: inline-block; zoom:1;'>
 				<div id='canvasDiv' class='bgChecker' style='width:512px; height:512px; position:relative;'>
 				</div>
 			</div>
-			<canvas id='canvasOverlay' width='512' height='512' style='position:fixed; top:0px; left:0px; z-index:999; pointer-events:none;'></canvas>
 		</div>
 		
+		<div id='canvasClip' style='overflow:hidden; width: calc(100% - 200px); height: calc(100% - 100px); position:absolute; right:0px; top:0px; border: inset 3px #ccc; pointer-events:none; '>
+			<canvas id='canvasOverlay' width='64' height='64' style='position:absolute; top:0px; left:0px; z-index:999; pointer-events:none; border: solid 1px #000; '></canvas>
+		</div>
 		<!-- 
 			end of panel
 			########################################################
