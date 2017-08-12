@@ -5,8 +5,8 @@ support me via patreon!
 */
 
 var canvasDiv;			//the canvases/layers reside in this div.
-var canvasOverlay;		//used for drawing the brush indicator and selection marquee stuff.
-var contextOverlay;
+var canvasIndicator;		//used for drawing the brush indicator and selection marquee stuff.
+var contextIndicator;
 
 /*#############################################################
 The master object holds the main components
@@ -25,10 +25,10 @@ function masterData(){
 		master.e['colorPanel'] = document.getElementById('colorPanel');
 		master.e['canvasScroll'] = document.getElementById('canvasScroll');
 		master.e['canvasFrame'] = document.getElementById('canvasFrame');
-		master.e['canvasClip'] = document.getElementById('canvasClip');
+		master.e['overlayDiv'] = document.getElementById('overlayDiv');
 		canvasDiv = document.getElementById('canvasDiv');
-		canvasOverlay = document.getElementById('canvasOverlay');
-		contextOverlay = canvasOverlay.getContext('2d');
+		canvasIndicator = document.getElementById('canvasIndicator');
+		contextIndicator = canvasIndicator.getContext('2d');
 	}
 	
 }
@@ -64,24 +64,16 @@ function initiate(){
 	tool.init();
 	color.init();
 
-	master.e.canvasFrame.onmousemove = function(e){
-		e = e || window.event;
-		
-		mouse.x = e.clientX;     // Get the horizontal coordinate
-		mouse.y = e.clientY;     // Get the vertical coordinate
-
-		var c = master.e.canvasClip;
-		var rect = c.getBoundingClientRect();
-		canvasOverlay.style.left = mouse.x-rect.left-parseInt(c.style.borderWidth,10)-parseInt(canvasOverlay.width*0.5,10)+"px";
-		canvasOverlay.style.top = mouse.y-rect.top-parseInt(c.style.borderWidth,10)-parseInt(canvasOverlay.height*0.5,10)+"px";
-		
-		update();
-	}
 	document.body.onmousemove = function(e){
 		e = e || window.event;
 		
 		mouse.x = e.clientX;     // Get the horizontal coordinate
 		mouse.y = e.clientY;     // Get the vertical coordinate
+		
+		var c = master.e.overlayDiv;
+		var rect = c.getBoundingClientRect();
+		canvasIndicator.style.left = mouse.x-rect.left-parseInt(c.style.borderWidth,10)-parseInt(canvasIndicator.width*0.5,10)+"px";
+		canvasIndicator.style.top = mouse.y-rect.top-parseInt(c.style.borderWidth,10)-parseInt(canvasIndicator.height*0.5,10)+"px";
 		
 		update();
 	}
