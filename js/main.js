@@ -23,6 +23,8 @@ function masterData(){
 
 	this.init = function(){
 		master.e['colorPanel'] = document.getElementById('colorPanel');
+		master.e['toolPropertyPanel'] = document.getElementById('toolPropertyPanel');
+		
 		master.e['canvasScroll'] = document.getElementById('canvasScroll');
 		master.e['canvasFrame'] = document.getElementById('canvasFrame');
 		master.e['overlayDiv'] = document.getElementById('overlayDiv');
@@ -61,9 +63,9 @@ function initiate(){
 		
 	master.init();
 	scene.init();
-	tool.init();
 	color.init();
-
+	tool.init();
+	
 	document.body.onmousemove = function(e){
 		e = e || window.event;
 		
@@ -75,6 +77,12 @@ function initiate(){
 		canvasIndicator.style.left = mouse.x-rect.left-parseInt(c.style.borderWidth,10)-parseInt(canvasIndicator.width*0.5,10)+"px";
 		canvasIndicator.style.top = mouse.y-rect.top-parseInt(c.style.borderWidth,10)-parseInt(canvasIndicator.height*0.5,10)+"px";
 		
+		/*
+		//the actual pixel location on the canvas
+		rect = canvasDiv.getBoundingClientRect();
+		console.log(mouse.y-rect.top);
+		*/
+		
 		update();
 	}
 	document.body.onmousedown = function(e){
@@ -85,7 +93,8 @@ function initiate(){
 		
 		master.clickedElement = e.target || e.srcElement;
 		
-		if(master.clickedElement.classList.contains("colorValue")){
+		if(master.clickedElement.classList.contains("colorValue") ||
+		master.clickedElement.classList.contains("sizeValue")){
 				if(!isNaN(parseInt(master.clickedElement.value)))master.clickedElement.dataset.clickvalue = master.clickedElement.value;
 		}
 		
@@ -115,9 +124,8 @@ function initiate(){
 	}	
 	
 	document.body.onkeydown = function(e){
-		e = e || window.event;
-		
-		console.log(e.which);
+		e = e || window.event;		
+		//console.log(e.which);
 		
 		master.keyedElement = e.target || e.srcElement;
 		

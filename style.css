@@ -21,6 +21,10 @@
 		padding:0px;
 		margin:0px;
 	}
+	/*
+	#canvasFrame{
+		cursor: url('data:image/svg+xml;utf8,<svg fill="none" stroke="black" stroke-width="1" height="48" viewBox="0 0 24 24" width="48" xmlns="http://www.w3.org/2000/svg"><path d="M 0 0 H 6 L 12 12 V 18"/></svg>') 24 24, auto;
+	}*/
 
 	#bodyBlock{
 		width:100%;
