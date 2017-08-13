@@ -68,7 +68,7 @@
 	}
 	
 	
-	.colorSliderBG{
+	.colorSliderBG,.sliderBG{
 		background-color: #aaa;
 		color: black;
 		border-top: 1px solid #333;
@@ -79,7 +79,7 @@
 		height:16px;
 		margin: 2px;
 	}	
-	.colorSlider{
+	.colorSlider,.slider{
 		pointer-events: none;
 		position: relative;
 		left:4px;

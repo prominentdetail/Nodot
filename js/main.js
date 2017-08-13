@@ -59,8 +59,10 @@ end of mouse
 
 function initiate(){
 
-	/* setup the main stuff */
-		
+	/* setup thedom elements */
+	setupDom();
+	
+	/* setup the main stuff */	
 	master.init();
 	scene.init();
 	color.init();
@@ -94,7 +96,7 @@ function initiate(){
 		master.clickedElement = e.target || e.srcElement;
 		
 		if(master.clickedElement.classList.contains("colorValue") ||
-		master.clickedElement.classList.contains("sizeValue")){
+		master.clickedElement.classList.contains("value")){
 				if(!isNaN(parseInt(master.clickedElement.value)))master.clickedElement.dataset.clickvalue = master.clickedElement.value;
 		}
 		
@@ -129,7 +131,8 @@ function initiate(){
 		
 		master.keyedElement = e.target || e.srcElement;
 		
-		if(master.keyedElement.classList.contains("colorValue")){
+		if(master.keyedElement.classList.contains("colorValue") ||
+		master.keyedElement.classList.contains("value")){
 			//master.keyedElement.dataset.clickvalue = master.keyedElement.value;
 			switch(e.which){
 				case(38):
@@ -152,7 +155,11 @@ function initiate(){
 		e = e || window.event;
 	
 		if( typeof master.keyedElement !== 'undefined' && master.keyedElement !== null ){
-			if(e.which!==38 && e.which!==40 && master.keyedElement.classList.contains("colorValue")){
+			if(e.which!==38 && e.which!==40 && (
+			master.keyedElement.classList.contains("colorValue") ||
+			master.keyedElement.classList.contains("value")
+			) ){
+		console.log(e.which);
 				if(!isNaN(parseInt(master.keyedElement.value)))master.keyedElement.dataset.clickvalue = parseInt(master.keyedElement.value);
 				update();
 			}
@@ -173,6 +180,20 @@ function update(){
 	
 	if( typeof e !== 'undefined' && e !== null ){
 		switch(e.id){
+			case("size"):
+				var rect = e.firstChild.getBoundingClientRect();	//get the position of the slider
+				
+				tool.properties.size = parseInt((clamp(mouse.x-rect.left,0,100)/100)*50);
+				tool.updateBrush();
+				break;				
+			case("sizeValue"):
+				if(e==master.clickedElement){
+					tool.properties.size = clamp(parseInt(e.dataset.clickvalue)+mouse.clickY-mouse.y,0,50);
+				}else{	//typing
+					tool.properties.size = clamp(parseInt(e.dataset.clickvalue),0,50);
+				}
+				tool.updateBrush();
+				break;
 			case("red"):
 			case("green"):
 			case("blue"):	//red and green have no break; so they'll continue into blue.

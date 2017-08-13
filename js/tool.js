@@ -28,6 +28,12 @@ function toolData(){
 	}
 	
 	this.updateBrush = function(){
+		
+		var s = document.getElementById('sizeSlider');
+		var v = document.getElementById('sizeValue');
+		s.style.width = (tool.properties.size/50*100)+"px";
+		if(v.value!=tool.properties.size)v.value = tool.properties.size;
+				
 		var size = tool.properties.size;
 		if(size==0)size=0.5;
 		
