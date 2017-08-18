@@ -11,6 +11,8 @@ function toolData(){
 	this.brushCanvas;	//the brush
 	this.brushContext;
 	
+	this.brushEdge = []; //holds data that is used when creating the brush indicator. This data is updated when adjusting brush size.
+	
 	
 	this.init = function(){
 		
@@ -68,7 +70,89 @@ function toolData(){
 				}
 			}
 			
-			//selection.traceBrush();
+			tool.traceBrush();
 		}
 	}
+	
+	this.traceBrush = function(){
+		var w = tool.brushCanvas.width, h = tool.brushCanvas.height;
+		var imgData = tool.brushContext.getImageData(0,0,w,h);
+		this.brushEdge = [];
+		var sx,sy;
+		//find starting point
+		for(var y=0; y<h; y++){
+			for(var x=0; x<w; x++){
+				if(imgData.data[((((y+1)*w)+x+1)*4)+3] > 0){
+					sx=x , sy=y;
+					x=w, y=h;	//breaks both loops
+				}
+			}
+		}
+		if(sx!=null && sy!=null){
+			tool.brushEdge.push({x:sx,y:sy} );
+			var step = [];
+			do{
+				step = tool.stepEdge(imgData.data[((((sy)*w)+sx)*4)+3],
+					imgData.data[((((sy)*w)+sx+1)*4)+3],
+					imgData.data[((((sy+1)*w)+sx)*4)+3],
+					imgData.data[((((sy+1)*w)+sx+1)*4)+3]);
+				sx+=step[0];
+				sy+=step[1];
+				tool.brushEdge.push({x:sx,y:sy});
+			}while(sx !== tool.brushEdge[0].x || sy !== tool.brushEdge[0].y);
+		}
+		tool.drawBrushEdge();
+	}
+	
+	this.stepEdge = function(a,b,c,d){
+		var sx=0,sy=0;
+		//check which way to go
+		/*
+			if(
+			a|b
+			-  -
+			c|d
+			){}
+		*/
+		if( a == 0 && b == 0 && c == 0 && d == 0 ) sx+=1;
+		else if(a == 0 && b > 0 && c == 0 &&	d == 0 ) sx+=1;
+		else if(a == 0 && b > 0 && c == 0 && d > 0 ) sy+=1;
+		else if(a == 0 && b == 0 && c == 0 && d > 0 ) sy+=1;
+		else if(a > 0 && b > 0 && c == 0 && d == 0 ) sx+=1;
+		else if(a > 0 && b == 0 && c == 0 && d == 0 ) sy-=1;
+		else if(a > 0 && b == 0 && c > 0 && d == 0 ) sy-=1;
+		else if(a == 0 && b == 0 && c > 0 && d == 0 ) sx-=1;
+		else if(a == 0 && b == 0 && c > 0 && d > 0 ) sx-=1;
+		else if(a > 0 && b == 0 && c > 0 && d > 0 ) sy-=1;
+		else if(a == 0 && b > 0 && c > 0 && d > 0 ) sx-=1;
+		else if(a > 0 && b > 0 && c == 0 && d > 0 ) sy+=1;
+		else if(a > 0 && b > 0 && c > 0 && d == 0 ) sx+=1;
+		else if(a > 0 && b == 0 && c == 0 && d > 0 ) sy-=1;
+		else if(a == 0 && b > 0 && c > 0 && d == 0 ) sx-=1;
+		else if(a > 0 && b > 0 && c > 0 && d > 0 ) return;
+		return [sx,sy];
+	}
+	
+	this.drawBrushEdge = function(){
+		var z = 1;//tileSet.zoom;
+		contextIndicator.clearRect(0,0,canvasIndicator.width,canvasIndicator.height);
+		
+		var strokeColor = 'rgb(255,255,255)';
+		//var strokeColor = 'rgb('+Math.round(((255-tileSet.colorbelow.r)*(255-tileSet.prevcolorbelow.r))/255)+','+Math.round(((255-tileSet.colorbelow.g)*(255-tileSet.prevcolorbelow.g))/255)+','+Math.round(((255-tileSet.colorbelow.b)*(255-tileSet.prevcolorbelow.b))/255)+')';
+			
+		contextIndicator.beginPath();
+		tool.brushEdge.forEach(function(entry){
+			if(tool.brushEdge.indexOf(entry)==0)
+				contextIndicator.moveTo(entry.x*z,entry.y*z);
+			else
+				contextIndicator.lineTo(entry.x*z,entry.y*z);
+		});
+		contextIndicator.lineTo(tool.brushEdge[0].x*z,tool.brushEdge[0].y*z);
+	
+		contextIndicator.lineWidth = 1;
+		contextIndicator.strokeStyle = strokeColor;
+		contextIndicator.stroke();
+		
+	}
+	
 }

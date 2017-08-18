@@ -34,7 +34,7 @@ function setupDom(){
 				<div id="size" class="sliderBG"><div id="sizeSlider" class="slider"></div></div>\
 			</div>\
 			<div style="display:inline-block; vertical-align:middle; font-size:10px;">\
-				<input type="text" id="sizeValue" data-clickvalue="0" class="value" maxlength="3"><br>\
+				<input type="text" id="sizeValue" data-clickvalue="0" class="value" maxlength="2"><br>\
 			</div>\
 		';
 }
