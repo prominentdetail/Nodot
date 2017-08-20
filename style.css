@@ -84,7 +84,7 @@
 		position: relative;
 		left:4px;
 		top:4px;
-		background-color: #ff0000;
+		background-color: #888;
 		color: black;
 		box-sizing: border-box;
 		border-right: 4px ridge #ccc;
@@ -100,6 +100,15 @@
 		border-right: 1px solid #ddd;
 		width:25px;
 		height:14px;
+		margin: 1px;
+	}
+	
+	select{
+		background-color:#bbb;
+		border-top: 1px solid #333;
+		border-bottom: 1px solid #ddd;
+		border-left: 1px solid #333;
+		border-right: 1px solid #ddd;
 		margin: 1px;
 	}
 	

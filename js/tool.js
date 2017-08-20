@@ -134,20 +134,23 @@ function toolData(){
 	}
 	
 	this.drawBrushEdge = function(){
-		var z = 1;//tileSet.zoom;
+		var z = master.zoom;
 		contextIndicator.clearRect(0,0,canvasIndicator.width,canvasIndicator.height);
+		canvasIndicator.width = tool.brushCanvas.width*z;
+		canvasIndicator.height = tool.brushCanvas.height*z;
 		
 		var strokeColor = 'rgb(255,255,255)';
 		//var strokeColor = 'rgb('+Math.round(((255-tileSet.colorbelow.r)*(255-tileSet.prevcolorbelow.r))/255)+','+Math.round(((255-tileSet.colorbelow.g)*(255-tileSet.prevcolorbelow.g))/255)+','+Math.round(((255-tileSet.colorbelow.b)*(255-tileSet.prevcolorbelow.b))/255)+')';
 			
+		//adding 0.5 ensures the stroke is within a pixel(not between pixels) so that it is drawn crisp
 		contextIndicator.beginPath();
 		tool.brushEdge.forEach(function(entry){
 			if(tool.brushEdge.indexOf(entry)==0)
-				contextIndicator.moveTo(entry.x*z,entry.y*z);
+				contextIndicator.moveTo(0.5+entry.x*z,0.5+entry.y*z);
 			else
-				contextIndicator.lineTo(entry.x*z,entry.y*z);
+				contextIndicator.lineTo(0.5+entry.x*z,0.5+entry.y*z);
 		});
-		contextIndicator.lineTo(tool.brushEdge[0].x*z,tool.brushEdge[0].y*z);
+		contextIndicator.lineTo(0.5+tool.brushEdge[0].x*z,0.5+tool.brushEdge[0].y*z);
 	
 		contextIndicator.lineWidth = 1;
 		contextIndicator.strokeStyle = strokeColor;

@@ -20,6 +20,8 @@ function masterData(){
 
 	this.clickedElement = null;
 	this.keyedElement = null;
+	
+	this.zoom = 1;
 
 	this.init = function(){
 		master.e['colorPanel'] = document.getElementById('colorPanel');
@@ -231,6 +233,12 @@ function update(){
 		}
 	}
 	
+}
+
+function zoom(e) {
+	master.zoom = parseFloat(e.value);
+	canvasFrame.style.zoom = master.zoom;
+	tool.drawBrushEdge();
 }
 
 function toggleIcon(e) {
