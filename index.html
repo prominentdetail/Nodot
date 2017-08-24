@@ -25,15 +25,18 @@
 		-->		
 		
 		<div id='canvasScroll' style='overflow:scroll; width: calc(100% - 200px); height: calc(100% - 100px); position:absolute; right:0px; top:0px; border: inset 3px #ccc; background-color: #888;'>
-			<div id='canvasFrame' style='padding:calc(100% * 0.25); display: inline-block; zoom:1;'>
+			<div id='canvasFrame' style='overflow:hidden; padding:calc(100% * 0.25); display: inline-block; zoom:1;position:relative;'>
+				
+				<div id='overlayDiv' style='overflow:hidden; width: 100%; height: 100% ; position:absolute; left:0px; top:0px; border: 0px; pointer-events:none;'>
+					<canvas id='canvasIndicator' width='64' height='64' style='position:absolute; top:0px; left:0px; z-index:999; pointer-events:none; border: solid 0px #000;'></canvas>
+				</div>
+				
 				<div id='canvasDiv' class='bgChecker' style='width:512px; height:512px; position:relative;'>
 				</div>
+				
 			</div>
 		</div>
 		
-		<div id='overlayDiv' style='overflow:hidden; width: calc(100% - 200px); height: calc(100% - 100px); position:absolute; right:0px; top:0px; border: inset 3px #ccc; pointer-events:none;'>
-			<canvas id='canvasIndicator' width='64' height='64' style='position:absolute; top:0px; left:0px; z-index:999; pointer-events:none; border: solid 0px #000;'></canvas>
-		</div>
 		<!-- 
 			end of panel
 			########################################################

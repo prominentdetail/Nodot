@@ -76,16 +76,19 @@ function initiate(){
 		mouse.x = e.clientX;     // Get the horizontal coordinate
 		mouse.y = e.clientY;     // Get the vertical coordinate
 		
-		var c = master.e.overlayDiv;
-		var rect = c.getBoundingClientRect();
-		canvasIndicator.style.left = mouse.x-rect.left-parseInt(c.style.borderWidth,10)-parseInt(canvasIndicator.width*0.5,10)+"px";
-		canvasIndicator.style.top = mouse.y-rect.top-parseInt(c.style.borderWidth,10)-parseInt(canvasIndicator.height*0.5,10)+"px";
 		
-		/*
 		//the actual pixel location on the canvas
-		rect = canvasDiv.getBoundingClientRect();
-		console.log(mouse.y-rect.top);
-		*/
+		var rect = canvasDiv.getBoundingClientRect();
+		var pixelX = (mouse.x-rect.left*master.zoom)/master.zoom;
+		var pixelY = (mouse.y-rect.top*master.zoom)/master.zoom;
+		
+		//the indicator position
+		var pad = parseFloat(window.getComputedStyle(master.e.canvasFrame,null).getPropertyValue("padding"),10);
+		var sx = (Math.floor(pixelX)+pad)*master.zoom;
+		var sy = (Math.floor(pixelY)+pad)*master.zoom;		
+		canvasIndicator.style.left = sx-parseInt(canvasIndicator.width*0.5,10)+"px";
+		canvasIndicator.style.top = sy-parseInt(canvasIndicator.height*0.5,10)+"px";
+		
 		
 		update();
 	}
@@ -238,6 +241,7 @@ function update(){
 function zoom(e) {
 	master.zoom = parseFloat(e.value);
 	canvasFrame.style.zoom = master.zoom;
+	canvasIndicator.style.zoom = 1/master.zoom;
 	tool.drawBrushEdge();
 }
 
