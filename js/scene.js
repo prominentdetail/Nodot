@@ -5,12 +5,18 @@ function sceneData(){
 	this.context = [];
 	this.layer = 0;	//the index number of the current canvas
 
+	//this.strokeCanvas = document.createElement("canvas");		//draw the whole stroke/line separately to this canvas(when mouse is held down) before applying to actual layer canvas(when mouse released)
+	//this.strokeContext = scene.strokeCanvas.getContext('2d');
+	
 	this.init = function(){
 		this.setupCanvas();
 	}
 	
 	this.setupCanvas = function(){
 		this.layer = 0;
+	
+		//scene.strokeCanvas.width = 512;
+		//scene.strokeCanvas.height = 512;
 		
 		for(var i=0; i<this.canvas.length; i++){
 			this.canvas[i] = null;

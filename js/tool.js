@@ -158,4 +158,96 @@ function toolData(){
 		
 	}
 	
+	this.drawPencil = function(){
+		scene.context[scene.layer].drawImage(tool.brushCanvas,mouse.canvasX-tool.properties.offsetX,mouse.canvasY-tool.properties.offsetY);
+		//ctx.drawImage(img,10,10);
+	}
+	
+	this.drawLine = function(sx,sy,ex,ey){
+		
+		this.hasDrawn=true;
+		//masked will be used in case of selection tool (when/if implemented), to prevent drawing outside of selection
+		//var masked=selection.edge.length>0?true:false;
+
+		//bresenham's line algorith via wiki
+		var x0 = sx;
+		var y0 = sy;
+		var x1 = ex;
+		var y1 = ey;
+		var t1 = ex;
+		var t2 = ey;
+		
+		var steep = 0;
+		if(Math.abs(y1 - y0) > Math.abs(x1 - x0)) steep = 1;
+		if (steep == 1){
+			t1 = x0;
+			t2 = x1;
+			x0 = y0;
+			x1 = y1;
+			y0 = t1;
+			y1 = t2;
+		}
+		if (x0 > x1){
+			t1 = x0;
+			t2 = y0;
+			x0 = x1;
+			y0 = y1;
+			x1 = t1;
+			y1 = t2;
+		}
+		var deltax = x1 - x0;
+		var deltay = Math.abs(y1 - y0);
+		var error = deltax / 2;
+		var ystep;
+		var y = y0;
+		if (y0 < y1){
+			ystep = 1;
+		} else {
+			ystep = -1;
+		}
+		
+		var savederror = error;
+		var savedy = y;
+		
+		y = savedy;
+		error = savederror;
+		
+		for( var x = x0; x != x1; x = x - ((x-x1)/Math.abs(x-x1)) ){
+			if (steep == 1){
+				scene.context[scene.layer].drawImage(tool.brushCanvas,y-tool.properties.offsetX,x-tool.properties.offsetY);
+				/*if(masked){
+					this.editContext.globalCompositeOperation = 'destination-in';
+					this.editContext.drawImage(selection.resizedCanvas,selection.resize.x,selection.resize.y);
+					this.editContext.globalCompositeOperation = 'source-over';
+				}*/
+				//this.signalDraw(y,x,color,mode);
+						
+			} else {
+				scene.context[scene.layer].drawImage(tool.brushCanvas,x-tool.properties.offsetX,y-tool.properties.offsetY);
+				/*if(masked){
+					this.editContext.globalCompositeOperation = 'destination-in';
+					this.editContext.drawImage(selection.resizedCanvas,selection.resize.x,selection.resize.y);
+					this.editContext.globalCompositeOperation = 'source-over';
+				}*/
+				//this.signalDraw(x,y,color,mode);
+			
+			}
+			var error = error - deltay;
+			if (error < 0){
+				y = y + ystep;
+				error = error + deltax;
+			}
+		}
+		
+		scene.context[scene.layer].drawImage(tool.brushCanvas,ex-tool.properties.offsetX,ey-tool.properties.offsetY);
+		/*if(masked){
+			this.editContext.globalCompositeOperation = 'destination-in';
+			this.editContext.drawImage(selection.resizedCanvas,selection.resize.x,selection.resize.y);
+			this.editContext.globalCompositeOperation = 'source-over';
+		}*/
+		//this.signalDraw(ex,ey,color,mode);
+		
+
+	}
+	
 }

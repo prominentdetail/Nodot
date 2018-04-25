@@ -52,7 +52,12 @@ function mouseData(){
 	this.clickX = 0;
 	this.clickY = 0;	
 	this.releaseX = 0;
-	this.releaseY = 0;	
+	this.releaseY = 0;
+	
+	this.canvasX = 0;
+	this.canvasY = 0;
+	this.canvasPrevX = 0;
+	this.canvasPrevY = 0;
 }
 /*
 end of mouse
@@ -82,10 +87,15 @@ function initiate(){
 		var pixelX = (mouse.x-rect.left*master.zoom)/master.zoom;
 		var pixelY = (mouse.y-rect.top*master.zoom)/master.zoom;
 		
+		mouse.canvasPreX = mouse.canvasX;
+		mouse.canvasPreY = mouse.canvasY;
+		mouse.canvasX = Math.floor(pixelX);
+		mouse.canvasY = Math.floor(pixelY);
+		
 		//the indicator position
 		var pad = parseFloat(window.getComputedStyle(master.e.canvasFrame,null).getPropertyValue("padding"),10);
-		var sx = (Math.floor(pixelX)+pad)*master.zoom;
-		var sy = (Math.floor(pixelY)+pad)*master.zoom;		
+		var sx = (Math.floor(pixelX)+1+pad)*master.zoom;
+		var sy = (Math.floor(pixelY)+1+pad)*master.zoom;		
 		canvasIndicator.style.left = sx-parseInt(canvasIndicator.width*0.5,10)+"px";
 		canvasIndicator.style.top = sy-parseInt(canvasIndicator.height*0.5,10)+"px";
 		
@@ -230,6 +240,10 @@ function update(){
 					}
 				}
 				color.updatePicker();
+				break;
+			case("canvasDiv"):
+				//tool.drawPencil();
+				tool.drawLine(mouse.canvasPreX,mouse.canvasPreY,mouse.canvasX,mouse.canvasY);
 				break;
 			default:
 			
