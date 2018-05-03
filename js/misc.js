@@ -1,5 +1,71 @@
 
+
+/*#############################################################
+The layerPanel object
+for layer handling, etc.
+*/
+var layers = new layersData();
+function layersData(){
+	this.list;		//element of div that holds list of layers
+	this.dragging = null;
+	this.dragX = 0;
+	this.dragY = 0;	
+	this.indicator = null;
+	this.dragTo = 0;	//the index to drag to
+}
+/*
+end of layers
+###############################################################
+*/
+
+
+/*#############################################################
+The imageloader object
+for imageloading, etc.
+*/
+var imageLoader = new imageLoaderData();
+function imageLoaderData(){
+	this.input;
+	this.img;	//the loading image that will be visualized
+	
+	this.init = function(){
+		this.input = document.getElementById('imageLoader');
+		this.input.addEventListener('change', imageLoader.loadImage, false);
+	}
+	
+	this.loadImage = function(e){
+		var reader = new FileReader();
+		
+		reader.onload = function(event){
+			imageLoader.img = new Image();
+			imageLoader.img.onload = function(){
+				//source.canvas.width = source.img.width;
+				//source.canvas.height = source.img.height;
+				scene.context[scene.layer].drawImage(imageLoader.img,0,0);
+			}
+			imageLoader.img.src = event.target.result;
+		}
+		reader.readAsDataURL(e.target.files[0]);
+		
+		//clear the input box
+		try{
+			imageLoader.input.value = '';
+			if(imageLoader.input.value){
+				imageLoader.input.type = "text";
+				imageLoader.input.type = "file";
+			}
+		}catch(e){}
+	}
+	
+}
+/*
+end of layers
+###############################################################
+*/
+
+
 function setupDom(){
+	 
 	document.getElementById('colorPanel').innerHTML = '\
 			<table width="100%"><tr><td>\
 				<button id="rgbhslButton" class="buttonIcon ui-rgb-icon" onclick="toggleIcon(this)">&nbsp;</button>\
@@ -37,6 +103,57 @@ function setupDom(){
 				<input type="text" id="sizeValue" data-clickvalue="0" class="value" maxlength="2"><br>\
 			</div>\
 		';
+		
+		
+	document.getElementById('layerPanel').innerHTML = '\
+<button id="" class="buttonIcon" onclick="toggleIcon(this)">+</button>\
+<button id="" class="buttonIcon" onclick="toggleIcon(this)">-</button>\
+<button id="" class="buttonIcon" onclick="toggleIcon(this)">&#8679;</button>\
+<button id="" class="buttonIcon" onclick="toggleIcon(this)">&#8681;</button>\
+			<div id="layerList" style="position:relative; width:180px; height:150px; overflow-y:scroll; border: inset 3px #ccc; background-color: #888; padding:2px">\
+<div id="layer" class="layer" draggable="true" ondragstart="layerDragStart(this)" ondragend="layerDragEnd(this)"><div class="buttonIcon ui-eye-icon" onclick="toggleIcon(this)">&nbsp;</div>Layer 2</div>\
+<div id="layer" class="layer" draggable="true" ondragstart="layerDragStart(this)" ondragend="layerDragEnd(this)"><div class="buttonIcon ui-eye-icon" onclick="toggleIcon(this)">&nbsp;</div>Layer 1</div>\
+<div id="layer" class="layer layerSelected" draggable="true" ondragstart="layerDragStart(this)" ondragend="layerDragEnd(this)"><div class="buttonIcon ui-eye-icon" onclick="toggleIcon(this)">&nbsp;</div>Layer 0</div>\
+			</div>\
+		';
+		
+		
+	//store any miscellaneous elements that we need to reference later
+	layers.list = document.getElementById('layerList');
+	
+	
+	layers.list.ondragover = function(e) {
+		e = e || window.event;
+		//var rect = e.currentTarget.getBoundingClientRect();
+		var rect = layers.list.getBoundingClientRect();
+		layers.dragX = e.clientX - rect.left;
+		layers.dragY = e.clientY - rect.top + layers.list.scrollTop;
+
+		layers.dragTo = Math.round(layers.dragY/layers.dragging.offsetHeight);
+		layers.indicator.style.top = layers.dragTo*layers.dragging.offsetHeight+'px'; 
+		//console.log(x, y);
+	}
+}
+
+function layerDragStart(e){
+	layers.dragging=e;
+	layers.indicator = document.createElement("div");
+	layers.indicator.className = 'dragIndicator';
+	layers.list.appendChild(layers.indicator);
+}
+
+function layerDragEnd(e){
+	
+	var elements = document.getElementsByClassName('layer');
+	if(layers.dragTo<elements.length)
+		layers.list.insertBefore(layers.dragging, elements[layers.dragTo]);
+	else
+		layers.list.insertBefore(layers.dragging, layers.indicator.previousSibling);		//for some reason have to use previous Sibling position (maybe there is an invisible dom element??)
+		//layers.list.appendChild(layers.dragging);
+	
+	layers.list.removeChild(layers.indicator);
+	layers.indicator = null;
+	
 }
 
 function checkJSON(j){
@@ -53,3 +170,4 @@ function checkJSON(j){
 function clamp(num,min,max){
   return Math.min(Math.max(min,num),max);
 }
+

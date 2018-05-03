@@ -48,9 +48,10 @@
 		text-align: center;
 		text-decoration: none;
 		display: inline-block;
-		margin: 4px 2px;
+		margin: 0px;
 		transition-duration: 0.4s;
 		cursor: pointer;
+		line-height: 1.25;
 	}
 	button:hover {background-color: #ddd;}
 
@@ -62,11 +63,47 @@
 		width:22px;
 		background-repeat: no-repeat;
 		background-position: center center;
+		display: inline-block;
 	}
 	.highlightIcon{
 		background-color: #ffff00;
 	}
 	
+	.layer {
+		width:calc(100% - 4px);
+		background-color: #888;
+		margin: 0px;
+		color: black;
+		border: outset 1px #aaa;
+		text-align: left;
+		text-decoration: none;
+		display: inline-block;
+		transition-duration: 0.4s;
+		cursor: pointer;
+		font-size: 13px;
+	}
+	.layer:hover {background-color: #bbb;}
+	
+	.layerSelected{
+		background-color: #aaa;
+	}
+	
+	.thumbnail {
+		margin: 0px 8px 0px 0px;
+		border: solid 1px #333;
+		display: inline-block;
+		vertical-align:middle;
+	}
+	.dragIndicator {
+		width:calc(100% - 4px);
+		height:4px;
+		background-color: #ddd;
+		margin: 0px;
+		display: inline-block;
+		position: absolute;
+		top:0px;
+		left:0px;
+	}
 	
 	.colorSliderBG,.sliderBG{
 		background-color: #aaa;
@@ -238,4 +275,11 @@
 	.ui-direction-icon {
 		background-image: url(images/icon-direction.png) !important;
 	}
+	.ui-eye-icon {
+		background-image: url(images/icon-eye.png) !important;
+	}
+	.ui-shuteye-icon {
+		background-image: url(images/icon-shuteye.png) !important;
+	}
+	
 	

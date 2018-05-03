@@ -26,6 +26,7 @@ function masterData(){
 	this.init = function(){
 		master.e['colorPanel'] = document.getElementById('colorPanel');
 		master.e['toolPropertyPanel'] = document.getElementById('toolPropertyPanel');
+		master.e['layerPanel'] = document.getElementById('layerPanel');
 		
 		master.e['canvasScroll'] = document.getElementById('canvasScroll');
 		master.e['canvasFrame'] = document.getElementById('canvasFrame');
@@ -74,6 +75,7 @@ function initiate(){
 	scene.init();
 	color.init();
 	tool.init();
+	imageLoader.init();
 	
 	document.body.onmousemove = function(e){
 		e = e || window.event;
@@ -115,6 +117,7 @@ function initiate(){
 				if(!isNaN(parseInt(master.clickedElement.value)))master.clickedElement.dataset.clickvalue = master.clickedElement.value;
 		}
 		
+		clickDown();
 		update();
 	}
 	document.body.onmouseup = function(e){
@@ -122,6 +125,8 @@ function initiate(){
 		
 		mouse.releaseX = e.clientX;
 		mouse.releaseY = e.clientY;
+		
+		clickUp();
 		
 		master.clickedElement = null;
 	}
@@ -188,6 +193,45 @@ function initiate(){
 		e.stopImmediatePropagation();
 		return false;
 	}*/
+	
+}
+
+function clickDown(){	
+	var e = master.clickedElement || master.keyedElement;
+	
+	if( typeof e !== 'undefined' && e !== null ){
+		switch(e.id){
+			case("layer"):
+				var elements = document.getElementsByClassName('layerSelected');
+				while(elements.length > 0){
+					elements[0].classList.remove('layerSelected');
+				}
+				e.className += " layerSelected";
+				var node = e;
+				for (var i=0; (node=node.previousSibling); i++);
+				
+				scene.layer = scene.canvas.length-1-i;
+				break;
+			default:
+			
+		}
+	}
+	
+}
+
+function clickUp(){	
+	var e = master.clickedElement || master.keyedElement;
+	
+	if( typeof e !== 'undefined' && e !== null ){
+		switch(e.id){
+			case("canvasDiv"):
+				scene.thumbContext[scene.layer].drawImage(scene.canvas[scene.layer],0,0,24,24);
+				break;
+			default:
+			
+		}
+	}
+	
 }
 
 function update(){	
@@ -307,10 +351,29 @@ function toggleIcon(e) {
 				
 				color.updatePicker();
 				break;
+			case("ui-eye-icon"):
+				e.classList.remove(item);
+				e.classList.add("ui-shuteye-icon");
+				
+				var node = e.parentNode;
+				for (var j=0; (node=node.previousSibling); j++);
+				var elements = document.getElementsByClassName('layerCanvas');
+				elements[j].style.visibility='hidden'
+				break;
+			case("ui-shuteye-icon"):
+				e.classList.remove(item);
+				e.classList.add("ui-eye-icon");
+				
+				var node = e.parentNode;
+				for (var j=0; (node=node.previousSibling); j++);
+				var elements = document.getElementsByClassName('layerCanvas');
+				elements[j].style.visibility='visible'
+				break;
 			default:
 			
 		}
 	}
+	
 }
 
 
