@@ -154,6 +154,24 @@ function layerDragEnd(e){
 	layers.list.removeChild(layers.indicator);
 	layers.indicator = null;
 	
+	//reorder the canvas arrays
+	var node = layers.dragging;
+	for (var i=0; (node=node.previousSibling); i++);
+	var moveTo = scene.canvas.length-1-i;
+	if(scene.layer!=moveTo){
+		scene.canvas.splice(moveTo, 0, scene.canvas.splice(scene.layer, 1)[0]);
+		scene.context.splice(moveTo, 0, scene.context.splice(scene.layer, 1)[0]);
+		scene.thumbCanvas.splice(moveTo, 0, scene.thumbCanvas.splice(scene.layer, 1)[0]);
+		scene.thumbContext.splice(moveTo, 0, scene.thumbContext.splice(scene.layer, 1)[0]);
+		
+		scene.layer = moveTo;
+	}
+	//refresh canvas dom order/zindex
+	for(var i=0; i<scene.canvas.length; i++){	
+		scene.canvas[i].style.zIndex = i;
+		canvasDiv.insertBefore(scene.canvas[i], canvasDiv.firstChild);
+	}
+	
 }
 
 function checkJSON(j){
