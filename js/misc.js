@@ -8,10 +8,15 @@ var layers = new layersData();
 function layersData(){
 	this.list;		//element of div that holds list of layers
 	this.dragging = null;
+	this.draggingOver = null;	//the current layer element that the mouse is hovering over while dragging
+	this.dropAbove = true; 	//whether to drop above or below element;
 	this.dragX = 0;
 	this.dragY = 0;	
 	this.indicator = null;
 	this.dragTo = 0;	//the index to drag to
+	this.groupIndex = null;		//the index of the first layer in a folder being dragged 
+	this.groupSize = 0;			//the number of layers inside a folder and any subfolders
+	this.groupNewIndex = null;	//the new index position of the group after dragged
 }
 /*
 end of layers
@@ -111,9 +116,12 @@ function setupDom(){
 <button id="" class="buttonIcon" onclick="toggleIcon(this)">&#8679;</button>\
 <button id="" class="buttonIcon" onclick="toggleIcon(this)">&#8681;</button>\
 			<div id="layerList" style="position:relative; width:180px; height:150px; overflow-y:scroll; border: inset 3px #ccc; background-color: #888; padding:2px">\
-<div id="layer" class="layer" draggable="true" ondragstart="layerDragStart(this)" ondragend="layerDragEnd(this)"><div class="buttonIcon ui-eye-icon" onclick="toggleIcon(this)">&nbsp;</div>Layer 2</div>\
-<div id="layer" class="layer" draggable="true" ondragstart="layerDragStart(this)" ondragend="layerDragEnd(this)"><div class="buttonIcon ui-eye-icon" onclick="toggleIcon(this)">&nbsp;</div>Layer 1</div>\
-<div id="layer" class="layer layerSelected" draggable="true" ondragstart="layerDragStart(this)" ondragend="layerDragEnd(this)"><div class="buttonIcon ui-eye-icon" onclick="toggleIcon(this)">&nbsp;</div>Layer 0</div>\
+<div id="folder" class="folder" draggable="true" ondragstart="layerDragStart(this)" ondragover="layerDragOver(this)" ondragend="layerDragEnd(this)"><div class="buttonIcon ui-collapsed-icon" onclick="toggleIcon(this)">&nbsp;</div>Folder<div class="folderContent" ondragover="layerDragOver(this)"></div></div>\
+<div id="folder" class="folder" draggable="true" ondragstart="layerDragStart(this)" ondragover="layerDragOver(this)" ondragend="layerDragEnd(this)"><div class="buttonIcon ui-collapsed-icon" onclick="toggleIcon(this)">&nbsp;</div>Folder<div class="folderContent" ondragover="layerDragOver(this)"></div></div>\
+<div id="folder" class="folder" draggable="true" ondragstart="layerDragStart(this)" ondragover="layerDragOver(this)" ondragend="layerDragEnd(this)"><div class="buttonIcon ui-collapsed-icon" onclick="toggleIcon(this)">&nbsp;</div>Folder<div class="folderContent" ondragover="layerDragOver(this)"></div></div>\
+<div id="layer" class="layer" draggable="true" ondragstart="layerDragStart(this)" ondragover="layerDragOver(this)" ondragend="layerDragEnd(this)"><div class="buttonIcon ui-eye-icon" onclick="toggleIcon(this)">&nbsp;</div>Layer 2</div>\
+<div id="layer" class="layer" draggable="true" ondragstart="layerDragStart(this)" ondragover="layerDragOver(this)" ondragend="layerDragEnd(this)"><div class="buttonIcon ui-eye-icon" onclick="toggleIcon(this)">&nbsp;</div>Layer 1</div>\
+<div id="layer" class="layer layerSelected" draggable="true" ondragstart="layerDragStart(this)" ondragover="layerDragOver(this)" ondragend="layerDragEnd(this)"><div class="buttonIcon ui-eye-icon" onclick="toggleIcon(this)">&nbsp;</div>Layer 0</div>\
 			</div>\
 		';
 		
@@ -121,7 +129,7 @@ function setupDom(){
 	//store any miscellaneous elements that we need to reference later
 	layers.list = document.getElementById('layerList');
 	
-	
+	/*
 	layers.list.ondragover = function(e) {
 		e = e || window.event;
 		//var rect = e.currentTarget.getBoundingClientRect();
@@ -132,7 +140,7 @@ function setupDom(){
 		layers.dragTo = Math.round(layers.dragY/layers.dragging.offsetHeight);
 		layers.indicator.style.top = layers.dragTo*layers.dragging.offsetHeight+'px'; 
 		//console.log(x, y);
-	}
+	}*/
 }
 
 function layerDragStart(e){
@@ -140,38 +148,164 @@ function layerDragStart(e){
 	layers.indicator = document.createElement("div");
 	layers.indicator.className = 'dragIndicator';
 	layers.list.appendChild(layers.indicator);
+	
+	//if we start dragging a folder, record the start index of the first layer within the folder, as well as the number of layers within it
+	if(layers.dragging.className=="folder"){
+		layers.groupIndex = null;
+		layers.groupSize = 0;
+		var folderElements = layers.dragging.getElementsByClassName('layer');
+		if(folderElements.length>0){
+			var listElements = layers.list.getElementsByClassName('layer');
+			for (var i=0; i<listElements.length; i++){
+				if(folderElements[0]==listElements[i]){
+					layers.groupIndex = scene.canvas.length-i-folderElements.length;		//this is the bottom layer in the folder(since order is inverted in the canvas arrays)
+					layers.groupSize = folderElements.length;
+					break;
+				}
+			}
+		}
+	}
+	
+	//this helps so we dont start multiple drags if clicking layer inside folder
+	window.event.stopPropagation();
+	window.event.stopImmediatePropagation();
+}
+
+function layerDragOver(e){
+	if(layers.dragging==null)return;
+	
+	layers.draggingOver = e;
+	var rectLayer = e.getBoundingClientRect();
+	var rectList = layers.list.getBoundingClientRect();
+	layers.dragX = window.event.clientX - rectList.left;
+	layers.dragY = window.event.clientY - rectList.top + layers.list.scrollTop;
+	
+	if(layers.dragY<=e.offsetTop+e.offsetHeight*0.5)
+		layers.dropAbove = true;
+	else
+		layers.dropAbove = false;
+	
+	layers.indicator.style.top = (layers.dropAbove?e.offsetTop:e.offsetTop+e.offsetHeight)+'px'; 
+	
+	//this helps so that we can drop into nested elements(folders)
+	window.event.stopPropagation();
+	window.event.preventDefault();
+	window.event.stopImmediatePropagation();
+	return false;
+	
+	//console.log(window.event.clientY,rectLayer.top);
 }
 
 function layerDragEnd(e){
-	
+	/*
 	var elements = document.getElementsByClassName('layer');
 	if(layers.dragTo<elements.length)
 		layers.list.insertBefore(layers.dragging, elements[layers.dragTo]);
 	else
 		layers.list.insertBefore(layers.dragging, layers.indicator.previousSibling);		//for some reason have to use previous Sibling position (maybe there is an invisible dom element??)
 		//layers.list.appendChild(layers.dragging);
+	*/
 	
+	if(layers.indicator == null)return;
 	layers.list.removeChild(layers.indicator);
 	layers.indicator = null;
 	
-	//reorder the canvas arrays
-	var node = layers.dragging;
-	for (var i=0; (node=node.previousSibling); i++);
-	var moveTo = scene.canvas.length-1-i;
-	if(scene.layer!=moveTo){
-		scene.canvas.splice(moveTo, 0, scene.canvas.splice(scene.layer, 1)[0]);
-		scene.context.splice(moveTo, 0, scene.context.splice(scene.layer, 1)[0]);
-		scene.thumbCanvas.splice(moveTo, 0, scene.thumbCanvas.splice(scene.layer, 1)[0]);
-		scene.thumbContext.splice(moveTo, 0, scene.thumbContext.splice(scene.layer, 1)[0]);
-		
-		scene.layer = moveTo;
+	//We use try/catch to remove errors, since browser will prevent dropping folders into sub-folders of itself- we don't need to code that ourself.
+	if(layers.draggingOver.className=="folderContent"){
+		try{
+			layers.draggingOver.appendChild(layers.dragging);
+		}catch(err){return;}
 	}
+	else{
+		if(layers.dropAbove){
+			try{
+				layers.draggingOver.parentElement.insertBefore(layers.dragging, layers.draggingOver);
+			}catch(err){return;}
+		}else{
+			try{
+				layers.draggingOver.parentElement.insertBefore(layers.dragging, layers.draggingOver);
+				layers.draggingOver.parentElement.insertBefore(layers.draggingOver, layers.dragging);
+			}catch(err){return;}
+		}		
+	}
+	
+	//reorder the canvas arrays
+	if(layers.dragging.className=="layer layerSelected"){
+		var moveTo;
+		var elements = layers.list.getElementsByClassName('layer');
+		for (var i=0; i<elements.length; i++){
+			if(layers.dragging==elements[i]){	
+				moveTo = scene.canvas.length-1-i;
+				break;
+			}
+		}
+		if(scene.layer!=moveTo){
+			scene.canvas.splice(moveTo, 0, scene.canvas.splice(scene.layer, 1)[0]);
+			scene.context.splice(moveTo, 0, scene.context.splice(scene.layer, 1)[0]);
+			scene.thumbCanvas.splice(moveTo, 0, scene.thumbCanvas.splice(scene.layer, 1)[0]);
+			scene.thumbContext.splice(moveTo, 0, scene.thumbContext.splice(scene.layer, 1)[0]);
+			
+			scene.layer = moveTo;
+		}
+	}else if(layers.dragging.className=="folder"){
+		//since a folder may contain more than one layer, we must move a section of values in the arrays.
+		/*
+		//example
+		var ta=[0,1,2,3,4,5,6,7];
+		var ar=ta.splice(3, 2);	//we take 2 value out beginning at index 3 and store in a variable
+		ar.unshift(0);					//0 means we are inserting
+		ar.unshift(1);					//1 means we are inserting at index 1
+		ta.splice.apply(ta,ar);		//we use apply() to use the array as the parameters- inserting the group back in at the new index
+		//this would be [0,3,4,1,2,5,6,7]
+		*/
+		
+		//if we have dragged a folder/group, find the new index position of the first layer in the group
+		layers.groupNewIndex = null;
+		var folderElements = layers.dragging.getElementsByClassName('layer');
+		if(folderElements.length>0){
+			var listElements = layers.list.getElementsByClassName('layer');
+			for (var i=0; i<listElements.length; i++){
+				if(folderElements[0]==listElements[i]){
+					layers.groupNewIndex = scene.canvas.length-i-layers.groupSize;	//the index corresponds to the bottom layer inside the folder because canvas arrays are inverted
+				}
+				//find currently selected layer(since it may have been reordered)
+				if(listElements[i].className=="layer layerSelected")scene.layer = scene.canvas.length-1-i;
+			}
+			//reorder the canvas arrays
+			var temp = scene.canvas.splice(layers.groupIndex,layers.groupSize);
+			temp.unshift(0);
+			temp.unshift(layers.groupNewIndex);
+			scene.canvas.splice.apply(scene.canvas,temp);
+			
+			temp = scene.context.splice(layers.groupIndex,layers.groupSize);
+			temp.unshift(0);
+			temp.unshift(layers.groupNewIndex);
+			scene.context.splice.apply(scene.context,temp);
+			
+			temp = scene.thumbCanvas.splice(layers.groupIndex,layers.groupSize);
+			temp.unshift(0);
+			temp.unshift(layers.groupNewIndex);
+			scene.thumbCanvas.splice.apply(scene.thumbCanvas,temp);
+			
+			temp = scene.thumbContext.splice(layers.groupIndex,layers.groupSize);
+			temp.unshift(0);
+			temp.unshift(layers.groupNewIndex);
+			scene.thumbContext.splice.apply(scene.thumbContext,temp);
+		}
+		
+	}
+	
 	//refresh canvas dom order/zindex
 	for(var i=0; i<scene.canvas.length; i++){	
 		scene.canvas[i].style.zIndex = i;
 		canvasDiv.insertBefore(scene.canvas[i], canvasDiv.firstChild);
 	}
 	
+	layers.dragging = null;
+	
+	//if dropping onto nested elements- prevents firing multiple times
+	window.event.stopPropagation();
+	window.event.stopImmediatePropagation();
 }
 
 function checkJSON(j){

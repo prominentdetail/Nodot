@@ -179,7 +179,7 @@ function initiate(){
 			master.keyedElement.classList.contains("colorValue") ||
 			master.keyedElement.classList.contains("value")
 			) ){
-		console.log(e.which);
+		//console.log(e.which);
 				if(!isNaN(parseInt(master.keyedElement.value)))master.keyedElement.dataset.clickvalue = parseInt(master.keyedElement.value);
 				update();
 			}
@@ -202,15 +202,21 @@ function clickDown(){
 	if( typeof e !== 'undefined' && e !== null ){
 		switch(e.id){
 			case("layer"):
-				var elements = document.getElementsByClassName('layerSelected');
+				//remove and add class to show the highlighted style for the selected layer
+				var elements = layers.list.getElementsByClassName('layerSelected');
 				while(elements.length > 0){
 					elements[0].classList.remove('layerSelected');
 				}
 				e.className += " layerSelected";
-				var node = e;
-				for (var i=0; (node=node.previousSibling); i++);
 				
-				scene.layer = scene.canvas.length-1-i;
+				//since we'll have folders in the layer panel- we need to get the elements that are layers, and find the index of the selected element
+				elements = layers.list.getElementsByClassName('layer');
+				for (var i=0; i<elements.length; i++){
+					if(e==elements[i]){	
+						scene.layer = scene.canvas.length-1-i;
+						break;
+					}
+				}
 				break;
 			default:
 			
@@ -355,19 +361,37 @@ function toggleIcon(e) {
 				e.classList.remove(item);
 				e.classList.add("ui-shuteye-icon");
 				
-				var node = e.parentNode;
-				for (var j=0; (node=node.previousSibling); j++);
-				var elements = document.getElementsByClassName('layerCanvas');
-				elements[j].style.visibility='hidden'
+				var elements = layers.list.getElementsByClassName('layer');
+				for (var j=0; j<elements.length; j++){
+					if(e.parentElement==elements[j]){	
+						var canvasElements = document.getElementsByClassName('layerCanvas');
+						canvasElements[j].style.visibility='hidden';
+						break;
+					}
+				}
 				break;
 			case("ui-shuteye-icon"):
 				e.classList.remove(item);
 				e.classList.add("ui-eye-icon");
 				
-				var node = e.parentNode;
-				for (var j=0; (node=node.previousSibling); j++);
-				var elements = document.getElementsByClassName('layerCanvas');
-				elements[j].style.visibility='visible'
+				var elements = layers.list.getElementsByClassName('layer');
+				for (var j=0; j<elements.length; j++){
+					if(e.parentElement==elements[j]){	
+						var canvasElements = document.getElementsByClassName('layerCanvas');
+						canvasElements[j].style.visibility='visible';
+						break;
+					}
+				}
+				break;
+			case("ui-collapsed-icon"):
+				e.classList.remove(item);
+				e.classList.add("ui-expanded-icon");
+				
+				break;
+			case("ui-expanded-icon"):
+				e.classList.remove(item);
+				e.classList.add("ui-collapsed-icon");
+				
 				break;
 			default:
 			

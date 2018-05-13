@@ -69,20 +69,51 @@
 		background-color: #ffff00;
 	}
 	
-	.layer {
-		width:calc(100% - 4px);
+	.folder {
+		width:calc(100% - 0px);
 		background-color: #888;
 		margin: 0px;
 		color: black;
-		border: outset 1px #aaa;
+		border: outset #aaa;
+		border-width: 1px 0 1px 0;
 		text-align: left;
 		text-decoration: none;
 		display: inline-block;
-		transition-duration: 0.4s;
+		transition-duration: 0.2s;
+		cursor: pointer;
+		font-size: 13px;
+		padding: 0 0 4px 0;
+	}
+	.folderContent {
+		width:calc(100% - 9px);
+		margin: 0 0 0 8px;
+		color: black;
+		border: inset #ccc;
+		border-width: 1px 0 1px 1px;
+		text-align: left;
+		text-decoration: none;
+		display: inline-block;
+		transition-duration: 0.2s;
+		cursor: pointer;
+		font-size: 13px;
+		padding: 2px 0 2px 0px;
+	}
+	
+	.layer {
+		width:calc(100% - 0px);
+		background-color: #888;
+		margin: 0px;
+		color: black;
+		border: outset #aaa;
+		border-width: 1px 0 1px 0;
+		text-align: left;
+		text-decoration: none;
+		display: inline-block;
+		transition-duration: 0.2s;
 		cursor: pointer;
 		font-size: 13px;
 	}
-	.layer:hover {background-color: #bbb;}
+	.layer:hover {border-color: #ccc;}
 	
 	.layerSelected{
 		background-color: #aaa;
@@ -280,6 +311,12 @@
 	}
 	.ui-shuteye-icon {
 		background-image: url(images/icon-shuteye.png) !important;
+	}	
+	.ui-collapsed-icon {
+		background-image: url(images/icon-collapsed.png) !important;
+	}
+	.ui-expanded-icon {
+		background-image: url(images/icon-expanded.png) !important;
 	}
 	
 	
